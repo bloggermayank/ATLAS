@@ -82,11 +82,11 @@ These are real generated Meshy task IDs. Use them to identify models in the Mesh
 | Grand Piazza Fountain | `01a1f1ab-1664-71d9-9fa8-10eea7d4c8be` | `01a1f1b0-5d3e-7532-8605-a39c0475720e` | Geometry and texture completed |
 | Old Quarter Townhouse | `01a1f1b2-122c-71f0-bf93-0e56e53988da` | `01a1f1b2-cf05-7302-afea-cca2ac6a4044` | Geometry and texture completed; inspect mesh dimensions carefully |
 | Market Arcade | `01a1f1b6-d881-77d0-946e-5a0b83eeae86` | `01a1f1b9-40d8-71ec-9e80-c0afb97e6c01` | Geometry and texture completed |
-| Villa Terraces Villa | `01a1f1bb-39e6-7507-a00f-9bfed8377db2` | To be generated after geometry succeeds | Geometry task was in progress at handoff time |
+| Villa Terraces Villa | `01a1f1bb-39e6-7507-a00f-9bfed8377db2` | `01a1f1bd-3b49-736b-aa31-651fc3898e9d` | Geometry completed; texture task was processing at handoff time |
 
 **Critical export constraint:** a GLB download attempt from the connected Meshy account returned an upgrade-required error. The models have not been integrated into the repository yet. Do not pretend they are in `public/models`, do not fetch expiring Meshy preview URLs as if they were production assets, and do not create fake model files. The user may need to export/download GLBs from Meshy after the plan restriction is resolved.
 
-Townhouse generated dimensions were approximately **0.984 × 1.000 × 0.088**. This is an unusually thin façade-like result. Do not use it as a full-depth building without inspecting its geometry, normals, UVs, and thickness. It may be more appropriate as a façade layer. The fountain dimensions were approximately **1.90 × 1.50 × 1.90**. Market Arcade geometry dimensions were approximately **1.00 × 0.70 × 1.00**. Normalize all imported model scales from their bounding boxes; never assume a common unit scale across generated models.
+Townhouse generated dimensions were approximately **0.984 × 1.000 × 0.088**. Market Arcade geometry was approximately **1.00 × 0.704 × 1.00** and the villa geometry was approximately **1.00 × 0.978 × 0.967**. This is an unusually thin façade-like result. Do not use it as a full-depth building without inspecting its geometry, normals, UVs, and thickness. It may be more appropriate as a façade layer. The fountain dimensions were approximately **1.90 × 1.50 × 1.90**. Market Arcade geometry dimensions were approximately **1.00 × 0.70 × 1.00**. Normalize all imported model scales from their bounding boxes; never assume a common unit scale across generated models.
 
 When GLBs become available:
 1. Put them in a clear folder such as `public/models/` with descriptive names.
