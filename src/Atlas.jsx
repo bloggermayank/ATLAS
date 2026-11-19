@@ -15,9 +15,9 @@ const districts = [
 ];
 
 function seeded(i){ const x=Math.sin(i*127.1+311.7)*43758.5453; return x-Math.floor(x); }
-function makeBuilding(scene,x,z,w,d,h,seed=1,accent=false){
+function makeBuilding(scene,x,z,w,d,h,seed=1,accent=false,districtId=null){
   const stone = new THREE.MeshStandardMaterial({color: accent ? '#d9c5a5' : ['#e7d9c2','#d8c7ad','#cbb89e','#eee2ce'][Math.floor(seeded(seed)*4)], roughness:.92});
-  const base = new THREE.Mesh(new THREE.BoxGeometry(w,h,d),stone); base.position.set(x,h/2,z); base.castShadow=true; base.receiveShadow=true; scene.add(base);
+  const base = new THREE.Mesh(new THREE.BoxGeometry(w,h,d),stone); base.position.set(x,h/2,z); base.castShadow=true; base.receiveShadow=true; base.userData.atlasDistrictId=districtId; scene.add(base);
   const roofMat = new THREE.MeshStandardMaterial({color:['#a85f45','#b96d4e','#96533f'][Math.floor(seeded(seed+4)*3)],roughness:1});
   const roof = new THREE.Mesh(new THREE.ConeGeometry(Math.max(w,d)*.78,Math.min(1.15,h*.22),4),roofMat); roof.rotation.y=Math.PI/4; roof.position.set(x,h+.28,z); roof.castShadow=true; scene.add(roof);
   const winMat = new THREE.MeshStandardMaterial({color:'#53685d',roughness:.8});
@@ -54,7 +54,7 @@ function createCity(scene){
       const a=seeded(di*100+i)*Math.PI*2, r=5+seeded(di*100+i+33)*6;
       const x=cx+Math.cos(a)*r,z=cz+Math.sin(a)*r;
       if(Math.abs(x)<5&&Math.abs(z)<5)continue;
-      makeBuilding(scene,x,z,1.5+seeded(i+di*9)*1.3,1.5+seeded(i+di*11)*1.2,2.5+seeded(i+di*13)*4,di*50+i);
+      makeBuilding(scene,x,z,1.5+seeded(i+di*9)*1.3,1.5+seeded(i+di*11)*1.2,2.5+seeded(i+di*13)*4,di*50+i,false,district.id);
     }
     for(let t=0;t<5;t++){const a=seeded(di*50+t)*Math.PI*2,r=7+seeded(t+di*7)*5;addTree(scene,cx+Math.cos(a)*r,cz+Math.sin(a)*r,.8+seeded(t+3)*.35);}
   });
@@ -81,16 +81,16 @@ function CityCanvas({onSelect,night,focus}){
     createCity(scene);
     const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.06;controls.maxPolarAngle=Math.PI/2.08;controls.minDistance=22;controls.maxDistance=88;controls.target.set(0,0,0);controls.autoRotate=false;
     const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();const clickable=[];
-    scene.traverse(o=>{if(o.isMesh && o.geometry.type==='BoxGeometry')clickable.push(o);});
-    const click=e=>{const r=renderer.domElement.getBoundingClientRect();pointer.x=((e.clientX-r.left)/r.width)*2-1;pointer.y=-((e.clientY-r.top)/r.height)*2+1;raycaster.setFromCamera(pointer,camera);const hits=raycaster.intersectObjects(clickable);if(hits.length){const p=hits[0].object.position;let nearest=districts[0],dist=Infinity;districts.forEach(d=>{const n=Math.hypot(d.position[0]-p.x,d.position[2]-p.z);if(n<dist){dist=n;nearest=d;}});onSelect(nearest.id);}};
-    renderer.domElement.addEventListener('dblclick',click);
+    scene.traverse(o=>{if(o.isMesh && o.userData?.atlasDistrictId)clickable.push(o);});
+    const click=e=>{const r=renderer.domElement.getBoundingClientRect();pointer.x=((e.clientX-r.left)/r.width)*2-1;pointer.y=-((e.clientY-r.top)/r.height)*2+1;raycaster.setFromCamera(pointer,camera);const hits=raycaster.intersectObjects(clickable);if(hits.length){const districtId=hits[0].object.userData.atlasDistrictId;if(districtId)onSelect(districtId);}};
+    renderer.domElement.addEventListener('click',click);
     const resize=()=>{camera.aspect=el.clientWidth/el.clientHeight;camera.updateProjectionMatrix();renderer.setSize(el.clientWidth,el.clientHeight);};window.addEventListener('resize',resize);
     let frame;const animate=()=>{frame=requestAnimationFrame(animate);controls.update();renderer.render(scene,camera);};animate();
     api.current={camera,controls};
-    return()=>{cancelAnimationFrame(frame);window.removeEventListener('resize',resize);renderer.domElement.removeEventListener('dblclick',click);controls.dispose();renderer.dispose();el.removeChild(renderer.domElement);scene.traverse(o=>{o.geometry?.dispose?.();if(o.material){if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material.dispose();}});};
+    return()=>{cancelAnimationFrame(frame);window.removeEventListener('resize',resize);renderer.domElement.removeEventListener('click',click);controls.dispose();renderer.dispose();el.removeChild(renderer.domElement);scene.traverse(o=>{o.geometry?.dispose?.();if(o.material){if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material.dispose();}});};
   },[night,onSelect]);
   useEffect(()=>{if(!api.current||!focus)return;const d=districts.find(x=>x.id===focus);if(!d)return;const {camera,controls}=api.current;const target=new THREE.Vector3(d.position[0],0,d.position[2]);const offset=new THREE.Vector3(18,15,20);const fromCamera=camera.position.clone();const toCamera=target.clone().add(offset);const fromTarget=controls.target.clone();let start;let frame;const animateFocus=(time)=>{if(!start)start=time;const t=Math.min(1,(time-start)/850);const eased=1-Math.pow(1-t,3);camera.position.lerpVectors(fromCamera,toCamera,eased);controls.target.lerpVectors(fromTarget,target,eased);if(t<1)frame=requestAnimationFrame(animateFocus);};frame=requestAnimationFrame(animateFocus);return()=>cancelAnimationFrame(frame);},[focus]);
-  return <div className="city-canvas" ref={mount}><div className="canvas-hint"><span className="hint-dot"/> DRAG TO EXPLORE <span className="hint-divider"/> DOUBLE-CLICK A BUILDING TO DISCOVER</div></div>;
+  return <div className="city-canvas" ref={mount}><div className="canvas-hint"><span className="hint-dot"/> DRAG TO EXPLORE <span className="hint-divider"/> TAP OR CLICK A BUILDING TO DISCOVER</div></div>;
 }
 
 export default function Atlas(){
