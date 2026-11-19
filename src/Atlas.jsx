@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { ArrowDown, ArrowUpRight, Compass, LocateFixed, Menu, Moon, Sun, Volume2, X } from 'lucide-react';
@@ -89,14 +89,14 @@ function CityCanvas({onSelect,night,focus}){
     api.current={camera,controls};
     return()=>{cancelAnimationFrame(frame);window.removeEventListener('resize',resize);renderer.domElement.removeEventListener('dblclick',click);controls.dispose();renderer.dispose();el.removeChild(renderer.domElement);scene.traverse(o=>{o.geometry?.dispose?.();if(o.material){if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material.dispose();}});};
   },[night,onSelect]);
-  useEffect(()=>{if(!api.current||!focus)return;const d=districts.find(x=>x.id===focus);if(!d)return;const {camera,controls}=api.current;const target=new THREE.Vector3(d.position[0],0,d.position[2]);const offset=new THREE.Vector3(18,15,20);camera.position.copy(target.clone().add(offset));controls.target.copy(target);},[focus]);
+  useEffect(()=>{if(!api.current||!focus)return;const d=districts.find(x=>x.id===focus);if(!d)return;const {camera,controls}=api.current;const target=new THREE.Vector3(d.position[0],0,d.position[2]);const offset=new THREE.Vector3(18,15,20);const fromCamera=camera.position.clone();const toCamera=target.clone().add(offset);const fromTarget=controls.target.clone();let start;let frame;const animateFocus=(time)=>{if(!start)start=time;const t=Math.min(1,(time-start)/850);const eased=1-Math.pow(1-t,3);camera.position.lerpVectors(fromCamera,toCamera,eased);controls.target.lerpVectors(fromTarget,target,eased);if(t<1)frame=requestAnimationFrame(animateFocus);};frame=requestAnimationFrame(animateFocus);return()=>cancelAnimationFrame(frame);},[focus]);
   return <div className="city-canvas" ref={mount}><div className="canvas-hint"><span className="hint-dot"/> DRAG TO EXPLORE <span className="hint-divider"/> DOUBLE-CLICK A BUILDING TO DISCOVER</div></div>;
 }
 
 export default function Atlas(){
   const [selected,setSelected]=useState('grand-piazza');const [night,setNight]=useState(false);const [panel,setPanel]=useState(false);const [menu,setMenu]=useState(false);
   const active=districts.find(d=>d.id===selected)||districts[1];
-  const select=(id)=>{setSelected(id);setPanel(true);};
+  const select=useCallback((id)=>{setSelected(id);setPanel(true);},[]);
   return <main className={night?'atlas night':'atlas'}>
     <header className="topbar">
       <a className="wordmark" href="#" onClick={e=>{e.preventDefault();setSelected('grand-piazza');setPanel(false);}}>ATLAS<span className="wordmark-dot">.</span><small>THE IMAGINED CITY</small></a>
