@@ -10,7 +10,7 @@
 | Grand Piazza Fountain | `01a1f1ab-1664-71d9-9fa8-10eea7d4c8be` | `01a1f1b0-5d3e-7532-8605-a39c0475720e` | Geometry and texture complete |
 | Old Quarter Townhouse | `01a1f1b2-122c-71f0-bf93-0e56e53988da` | `01a1f1b2-cf05-7302-afea-cca2ac6a4044` | Geometry and texture complete; generated mesh is unusually thin |
 | Market Arcade | `01a1f1b6-d881-77d0-946e-5a0b83eeae86` | `01a1f1b9-40d8-71ec-9e80-c0afb97e6c01` | Geometry and texture complete |
-| Villa Terraces Villa | `01a1f1bb-39e6-7507-a00f-9bfed8377db2` | `01a1f1bd-3b49-736b-aa31-651fc3898e9d` | Geometry complete; final texture task was processing at handoff |
+| Villa Terraces Villa | `01a1f1bb-39e6-7507-a00f-9bfed8377db2` | `01a1f1bd-3b49-736b-aa31-651fc3898e9d` | Geometry and texture complete |
 
 ## Important dimensions from Meshy
 
