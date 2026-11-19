@@ -114,8 +114,8 @@ When GLBs become available:
 - Preserve OrbitControls for drag/orbit and zoom.
 - Add clear, discoverable interaction hints that accurately describe actual controls.
 - Add a reliable district selector (the directory already exists) that smoothly frames the selected district.
-- Building clicks should resolve to the correct district; use explicit userData/metadata on selectable meshes rather than guessing the nearest district from a clicked mesh position.
-- Avoid double-click-only discovery on touch screens. Support single tap on mobile or provide equivalent district buttons.
+- Building selection now uses explicit `userData.atlasDistrictId` metadata and single-click/single-tap input rather than guessing the nearest district from a clicked mesh position. Verify this remains reliable after any scene refactor.
+- Touch discovery has already been changed to single-tap building selection; verify it on mobile and keep district directory buttons as an accessible alternative.
 - Ensure a district click from the directory scrolls to the 3D world and opens the correct district panel.
 - Add a reset / overview action and a clear close/back action for the district information panel.
 - Prevent camera focus animations from fighting the user's active drag. Cancel previous focus animations and respect user interaction.
