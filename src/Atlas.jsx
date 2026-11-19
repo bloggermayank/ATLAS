@@ -104,7 +104,7 @@ export default function Atlas(){
       <div className="top-actions"><span className="edition">A CITY TO GET LOST IN</span><button className="icon-button" aria-label="Toggle day and night" onClick={()=>setNight(!night)}>{night?<Sun size={17}/>:<Moon size={17}/>}</button><button className="menu-button" onClick={()=>setMenu(!menu)} aria-label="Open menu">{menu?<X/>:<Menu/>}</button></div>
     </header>
     <section className="hero" id="explore">
-      <div className="hero-copy"><div className="eyebrow"><span/> AN OPEN WORLD, AT YOUR OWN PACE</div><h1>Somewhere<br/><em>between</em> the sea<br/>and the sky.</h1><p>A Mediterranean city shaped by light, lived-in streets, and the beauty of taking the long way home.</p><button className="explore-cta" onClick={()=>{setPanel(false);setSelected('grand-piazza');}}><Compass size={16}/> EXPLORE THE CITY <ArrowDown size={15}/></button></div>
+      <div className="hero-copy"><div className="eyebrow"><span/> AN OPEN WORLD, AT YOUR OWN PACE</div><h1>Somewhere<br/><em>between</em> the sea<br/>and the sky.</h1><p>A Mediterranean city shaped by light, lived-in streets, and the beauty of taking the long way home.</p><button className="explore-cta" onClick={()=>{setPanel(false);setSelected('grand-piazza');document.querySelector('.world')?.scrollIntoView({behavior:'smooth'});}}><Compass size={16}/> EXPLORE THE CITY <ArrowDown size={15}/></button></div>
       <div className="hero-note"><span className="note-line"/> 36° NORTH, 18° EAST <small>AN IMAGINED PLACE</small></div>
       <div className="hero-index"><span>01</span> / 08</div>
     </section>
