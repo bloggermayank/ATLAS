@@ -130,7 +130,8 @@ When GLBs become available:
 - Use semantic headings and navigation.
 - Verify the page at 1440px desktop, 1024px tablet, 390px mobile and 360px mobile.
 - Keep the first load reasonably light. Avoid adding large libraries or remote assets without a clear need.
-- Audit dependency versions and reconcile `package.json` with `package-lock.json`; keep a reproducible install command.
+- **Known issue:** `package.json` and `package-lock.json` are currently out of sync (root version/dependency declarations and the locked Vite version differ). Run `npm install`, review the resulting lockfile changes, commit the corrected lockfile, then verify a clean install and build. Do not switch to `npm ci` until the lockfile is reconciled.
+- Audit dependency versions and keep a reproducible install command.
 - Run:
   ```bash
   npm install
